@@ -75,9 +75,9 @@ static const float YIN_THRESHOLD = 0.9f;
 void setup() {
     Serial.begin(115200);
 
-    // Allocate 16 audio blocks (each 128 × int16_t = 256 bytes → 4 KB total).
-    // The graph needs 10-12 at peak; 16 gives comfortable headroom.
-    AudioMemory(16);
+    // AudioAnalyzeNoteFrequency buffers many blocks internally for YIN.
+    // 32 blocks (8 KB) gives enough headroom for the full graph.
+    AudioMemory(32);
 
     // Codec initialisation
     sgtl5000.enable();
