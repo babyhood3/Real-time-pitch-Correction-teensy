@@ -82,7 +82,7 @@ void setup() {
     // Codec initialisation
     sgtl5000.enable();
     sgtl5000.inputSelect(AUDIO_INPUT_LINEIN);
-    sgtl5000.lineInLevel(5);   // ~1.33 Vrms full-scale; adjust for your mic preamp
+    sgtl5000.lineInLevel(15);  // max sensitivity; MAX9814 mic outputs are quieter than true line-level
     sgtl5000.volume(0.8f);     // headphone volume 0–1
 
     pitchDetector.begin(YIN_THRESHOLD);
@@ -146,20 +146,19 @@ void loop() {
     // ---- 3. Push the smoothed ratio to the pitch-shifter (thread-safe) ----
     pitchShifter.setRatio(smoothedRatio);
 
-    // ---- 4. Optional Serial diagnostics (disable in production) ----
-    // Uncomment the block below to monitor via Serial Monitor at 115200 baud.
-    /*
+    // ---- 4. Serial diagnostics (open Tools > Serial Monitor at 115200 baud) ----
     static unsigned long lastPrint = 0;
-    if (millis() - lastPrint > 200) {
+    if (millis() - lastPrint > 250) {
         lastPrint = millis();
         Serial.print("Key=");   Serial.print(scaleMapper.getKey());
         Serial.print(" Scale=");
         Serial.print(scaleMapper.getScale() == ScaleMapper::MAJOR ? "Major" : "Minor");
+        Serial.print(" PitchAvail=");
+        Serial.print(pitchDetector.available() ? "Y" : "N");
         Serial.print(" Ratio=");  Serial.print(smoothedRatio, 3);
         Serial.print(" CPU=");    Serial.print(AudioProcessorUsageMax(), 1);
         Serial.print("% Blocks=");Serial.println(AudioMemoryUsageMax());
         AudioProcessorUsageMaxReset();
         AudioMemoryUsageMaxReset();
     }
-    */
 }
